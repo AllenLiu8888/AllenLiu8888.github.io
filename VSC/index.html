@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Profit Calculator</title>
+    <script src="script.js"></script>
+</head>
+<body>
+    <h1>Crypto Profit Calculator</h1>
+
+    <!-- 输入表单 -->
+    <form id="cryptoForm">
+        <label for="cryptoType">Crypto Type (BTC/ETH):</label>
+        <input type="text" id="cryptoType" name="cryptoType"><br><br>
+
+        <label for="buyTransactions">Buy Transactions (Date, Amount):</label>
+        <textarea id="buyTransactions" name="buyTransactions" rows="4" cols="50"></textarea><br><br>
+
+        <label for="sellTransactions">Sell Transactions (Date, Amount):</label>
+        <textarea id="sellTransactions" name="sellTransactions" rows="4" cols="50"></textarea><br><br>
+
+        <input type="button" value="Calculate Profit" onclick="calculateProfitExample()">
+    </form>
+
+    <!-- 输出区域 -->
+    <div id="output"></div>
+
+    <script>
+        async function calculateProfitExample() {
+            const cryptoType = document.getElementById('cryptoType').value;
+            const buyTransactionsRaw = document.getElementById('buyTransactions').value;
+            const sellTransactionsRaw = document.getElementById('sellTransactions').value;
+
+            // 解析交易记录
+            const transactions = parseTransactions(buyTransactionsRaw, 'buy').concat(parseTransactions(sellTransactionsRaw, 'sell'));
+
+            // 计算获利
+            const apiKey = 'e94e3f2726c9d7ba01afea35f24e6e66';
+            const profitRmb = await calculateProfit(transactions, cryptoType, apiKey);
+
+            // 显示结果
+            document.getElementById('output').innerText = `Total Profit in RMB: ${profitRmb}`;
+        }
+
+        function parseTransactions(transactionsRaw, type) {
+            return transactionsRaw.split('\n').map(line => {
+                const [date, amount] = line.split(',').map(item => item.trim());
+                return [type, date, parseFloat(amount)];
+            });
+        }
+    </script>
+</body>
+</html>
